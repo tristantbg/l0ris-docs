@@ -1,0 +1,8 @@
+{
+  "name": "textarea",
+  "description": "Enhanced textarea field for Kirby CMS with multiple added buttons",
+  "author": "Thomas Günther",
+  "license": "MIT",
+  "version": "1.7.1",
+  "type": "kirby-field"
+}

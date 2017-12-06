@@ -1,0 +1,12 @@
+title: Page
+
+fields:
+  reveal: reveal
+  
+  title:
+    label: Title
+    type:  text
+
+  text:
+    label: Text
+    type:  simplemde

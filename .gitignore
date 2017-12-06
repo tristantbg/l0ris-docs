@@ -1,0 +1,8 @@
+.DS_Store
+/content/*
+/content/site.txt
+/site/cache
+*.espressostorage
+/vendor/
+/site/accounts
+sftp-config.json
