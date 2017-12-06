@@ -1,5 +1,6 @@
 .DS_Store
 /content/*
+/thumbs
 /content/site.txt
 /site/cache
 *.espressostorage
