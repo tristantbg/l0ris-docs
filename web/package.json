@@ -28,7 +28,7 @@
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
-		"postbuild": "pagefind --site build --output-path build/pagefind",
+		"postbuild": "pagefind --site build --output-path build/pagefind && rm -rf static/pagefind && cp -R build/pagefind static/pagefind",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",

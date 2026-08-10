@@ -29,4 +29,3 @@ export {
 	DOCS_FULL_QUERY,
 	DOCS_NAV_QUERY
 } from './docs';
-export { SEARCH_QUERY } from './search';

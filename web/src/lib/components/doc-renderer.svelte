@@ -11,7 +11,7 @@
 	import { PortableText } from '$lib/components/portabletext/index.js';
 	import CalendarIcon from '@lucide/svelte/icons/calendar';
 	import ClockIcon from '@lucide/svelte/icons/clock';
-	import { calculateReadingTime } from '$lib/docs/reading-time.js';
+	// import { calculateReadingTime } from '$lib/docs/reading-time.js';
 
 	let {
 		meta,
@@ -36,7 +36,7 @@
 		rawContent?: string;
 	} = $props();
 
-	let readingTime = $derived(rawContent ? calculateReadingTime(rawContent) : '');
+	// let readingTime = $derived(rawContent ? calculateReadingTime(rawContent) : '');
 
 	let contentEl: HTMLDivElement | undefined = $state();
 
@@ -146,17 +146,14 @@
 			</p>
 		{/if}
 		<div class="text-muted-foreground mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-			{#if readingTime}
-				<span class="inline-flex items-center gap-1.5">
-					<ClockIcon class="size-3.5" />
-					{readingTime}
-				</span>
-			{/if}
 			{#if meta.tags?.length}
 				<span class="flex flex-wrap items-center gap-1.5">
 					{#each meta.tags as tag (tag)}
-						<span data-pagefind-filter="Tag" data-pagefind-ignore="index">
-							<Badge text={tag} />
+						<!-- Indexed (searching "électricité" should surface tagged pages)
+						     AND registered as a facet value. The trailing space keeps
+						     adjacent tags from concatenating in search excerpts. -->
+						<span data-pagefind-filter="Tag">
+							<Badge text={tag} />&#32;
 						</span>
 					{/each}
 				</span>
