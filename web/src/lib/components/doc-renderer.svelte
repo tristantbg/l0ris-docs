@@ -149,12 +149,15 @@
 		<div class="text-muted-foreground mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
 			{#if meta.tags?.length}
 				<span class="flex flex-wrap items-center gap-1.5">
+					<!-- Tag words are indexed once from this hidden, comma-separated
+					     text (searching "électricité" surfaces tagged pages, with
+					     clean excerpts). The visible chips only register the facet
+					     values — their text is ignored, so adjacent badges can't
+					     concatenate into "filtrationéquipement" in excerpts.
+					     Clicking a chip opens the search palette filtered on it. -->
+					<span class="sr-only">{meta.tags.join(', ')}</span>
 					{#each meta.tags as tag (tag)}
-						<!-- Indexed (searching "électricité" should surface tagged pages)
-						     AND registered as a facet value. The trailing space keeps
-						     adjacent tags from concatenating in search excerpts.
-						     Clicking opens the search palette filtered on the tag. -->
-						<span data-pagefind-filter="Tag">
+						<span data-pagefind-filter="Tag" data-pagefind-ignore="index">
 							<button
 								type="button"
 								class="cursor-pointer transition-opacity hover:opacity-75"
@@ -162,7 +165,7 @@
 								aria-label={`Rechercher le tag ${tag}`}
 							>
 								<Badge text={tag} />
-							</button>&#32;
+							</button>
 						</span>
 					{/each}
 				</span>

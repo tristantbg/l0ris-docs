@@ -3,6 +3,7 @@
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import FileTextIcon from '@lucide/svelte/icons/file-text';
 	import HashIcon from '@lucide/svelte/icons/hash';
+	import XIcon from '@lucide/svelte/icons/x';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Command from '$lib/components/ui/command/index.js';
 	import { Badge } from '$lib/components/ui/badge/index.js';
@@ -27,7 +28,12 @@
 	let searchResults = $state<Result[]>([]);
 	let searching = $state(false);
 
-	// Facets from the Pagefind index, refined by the current search.
+	// Facet counts from the unfiltered index — the chip lists derive from
+	// these so every chip stays visible and deselectable whatever the current
+	// refinement...
+	let globalCategoryFilters = $state<Record<string, number>>({});
+	let globalTagFilters = $state<Record<string, number>>({});
+	// ...and counts refined by the current search, displayed on the chips.
 	let categoryFilters = $state<Record<string, number>>({});
 	let tagFilters = $state<Record<string, number>>({});
 	let selectedCategory = $state<string | null>(null);
@@ -51,8 +57,10 @@
 			await pagefind.init();
 			// Preload global facet counts so the chips render before typing.
 			const filters = await pagefind.filters();
-			categoryFilters = filters?.['Catégorie'] ?? {};
-			tagFilters = filters?.['Tag'] ?? {};
+			globalCategoryFilters = filters?.['Catégorie'] ?? {};
+			globalTagFilters = filters?.['Tag'] ?? {};
+			categoryFilters = globalCategoryFilters;
+			tagFilters = globalTagFilters;
 			indexMissing = false;
 		} catch {
 			pagefind = null;
@@ -112,6 +120,9 @@
 		if (term === null && !hasFilters) {
 			searchResults = [];
 			searching = false;
+			// Back to a blank palette: restore the unfiltered counts.
+			categoryFilters = globalCategoryFilters;
+			tagFilters = globalTagFilters;
 			return;
 		}
 
@@ -151,6 +162,11 @@
 			: [...selectedTags, name];
 	}
 
+	function clearFilters() {
+		selectedCategory = null;
+		selectedTags = [];
+	}
+
 	function navigate(url: string) {
 		searchPalette.open = false;
 		goto(url);
@@ -163,11 +179,14 @@
 		}
 	}
 
+	// Top tags by global count — the list stays stable while refining; only
+	// the displayed counts follow the current search.
 	const topTags = $derived(
-		Object.entries(tagFilters)
+		Object.entries(globalTagFilters)
 			.filter(([, count]) => count > 0)
 			.sort((a, b) => b[1] - a[1])
 			.slice(0, 8)
+			.map(([name]) => [name, tagFilters[name] ?? 0] as [string, number])
 	);
 
 	// Selected tags stay visible even when the current counts drop them out
@@ -199,13 +218,18 @@
 <Command.Dialog bind:open={searchPalette.open} shouldFilter={false}>
 	<Command.Input placeholder="Rechercher dans la documentation..." bind:value={query} />
 
-	{#if Object.keys(categoryFilters).length || visibleTags.length}
+	{#if Object.keys(globalCategoryFilters).length || visibleTags.length}
 		<div class="flex flex-wrap items-center gap-1.5 border-b px-3 py-2">
-			{#each Object.entries(categoryFilters) as [name, count] (name)}
+			{#each Object.keys(globalCategoryFilters) as name (name)}
+				{@const count = categoryFilters[name] ?? 0}
 				<button type="button" onclick={() => toggleCategory(name)} class="cursor-pointer">
 					<Badge variant={selectedCategory === name ? 'default' : 'secondary'}>
 						{name}
-						<span class="opacity-60">&nbsp;{count}</span>
+						{#if selectedCategory === name}
+							<XIcon class="size-3" />
+						{:else}
+							<span class="opacity-60">&nbsp;{count}</span>
+						{/if}
 					</Badge>
 				</button>
 			{/each}
@@ -215,7 +239,11 @@
 					<button type="button" onclick={() => toggleTag(name)} class="cursor-pointer">
 						<Badge variant={selectedTags.includes(name) ? 'default' : 'outline'}>
 							{name}
-							<span class="opacity-60">&nbsp;{count}</span>
+							{#if selectedTags.includes(name)}
+								<XIcon class="size-3" />
+							{:else}
+								<span class="opacity-60">&nbsp;{count}</span>
+							{/if}
 						</Badge>
 					</button>
 				{/each}
@@ -230,7 +258,12 @@
 			{:else if searching}
 				Recherche...
 			{:else if query.length > 0 || hasActiveFilters}
-				Aucun résultat.
+				<div class="flex flex-col items-center gap-3">
+					<span>Aucun résultat{hasActiveFilters ? ' avec ces filtres' : ''}.</span>
+					{#if hasActiveFilters}
+						<Button variant="outline" size="sm" onclick={clearFilters}>Effacer les filtres</Button>
+					{/if}
+				</div>
 			{:else}
 				Tapez pour rechercher...
 			{/if}
