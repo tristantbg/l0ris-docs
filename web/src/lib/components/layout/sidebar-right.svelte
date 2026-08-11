@@ -77,9 +77,9 @@
 	class="sticky top-0 hidden h-svh border-s lg:flex"
 	{...restProps}
 >
-	<Sidebar.Header class="p-3">
+	<!-- <Sidebar.Header class="p-3">
 		<SearchCommand />
-	</Sidebar.Header>
+	</Sidebar.Header> -->
 	<Sidebar.Content>
 		{#if toc.items.length > 0}
 			<Sidebar.Group>

@@ -3,6 +3,7 @@
 	import type { DocMeta, DocPage } from '$lib/docs/types.js';
 	import { toc } from '$lib/docs/toc.svelte';
 	import { lightboxUrl, LIGHTBOX_CONTEXT } from '$lib/state/lightbox-url';
+	import { openSearch } from '$lib/state/search.svelte';
 	import Lightbox from '$lib/components/lightbox.svelte';
 	import MobileToc from '$lib/components/mobile-toc.svelte';
 	import BackToTop from '$lib/components/nav/back-to-top.svelte';
@@ -151,9 +152,17 @@
 					{#each meta.tags as tag (tag)}
 						<!-- Indexed (searching "électricité" should surface tagged pages)
 						     AND registered as a facet value. The trailing space keeps
-						     adjacent tags from concatenating in search excerpts. -->
+						     adjacent tags from concatenating in search excerpts.
+						     Clicking opens the search palette filtered on the tag. -->
 						<span data-pagefind-filter="Tag">
-							<Badge text={tag} />&#32;
+							<button
+								type="button"
+								class="cursor-pointer transition-opacity hover:opacity-75"
+								onclick={() => openSearch(tag)}
+								aria-label={`Rechercher le tag ${tag}`}
+							>
+								<Badge text={tag} />
+							</button>&#32;
 						</span>
 					{/each}
 				</span>
