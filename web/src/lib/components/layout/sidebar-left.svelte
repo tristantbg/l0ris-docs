@@ -32,9 +32,25 @@
 	function sectionHasActive(section: NavItem): boolean {
 		return section.items?.some((item) => isActive(item.href)) ?? false;
 	}
+
+	const sidebar = Sidebar.useSidebar();
+
+	// Icon-collapsed mode hides the submenus, so a click on a section icon
+	// would toggle an invisible collapsible. Navigate to the section's first
+	// page instead; expanded (and mobile sheet) keeps the accordion behavior.
+	function handleSectionClick(e: MouseEvent, section: NavItem, toggle: unknown) {
+		if (sidebar.state === 'collapsed' && !sidebar.isMobile) {
+			const first = section.items?.find((item) => item.href)?.href;
+			if (first) {
+				goto(first);
+				return;
+			}
+		}
+		(toggle as ((ev: MouseEvent) => void) | undefined)?.(e);
+	}
 </script>
 
-<Sidebar.Root bind:ref aria-label="Documentation navigation" {...restProps}>
+<Sidebar.Root bind:ref collapsible="icon" aria-label="Documentation navigation" {...restProps}>
 	<Sidebar.Header>
 		<Sidebar.Menu>
 			<Sidebar.MenuItem>
@@ -97,6 +113,11 @@
 				{/if}
 			</Sidebar.MenuItem>
 		</Sidebar.Menu>
+		<!-- Canonical spot for search in the shadcn docs sidebar; hidden while
+		     collapsed to icons — the global ⌘K shortcut keeps working. -->
+		<div class="group-data-[collapsible=icon]:hidden">
+			<SearchCommand {navigation} />
+		</div>
 	</Sidebar.Header>
 	<Sidebar.Content>
 		<Sidebar.Group>
@@ -109,7 +130,12 @@
 								<Collapsible.Trigger>
 									{#snippet child({ props })}
 										{@const SectionIcon = resolveIcon(section.icon)}
-										<Sidebar.MenuButton {...props} tooltipContent={section.title}>
+										<Sidebar.MenuButton
+											{...props}
+											isActive={sectionHasActive(section)}
+											tooltipContent={section.title}
+											onclick={(e) => handleSectionClick(e, section, props.onclick)}
+										>
 											{#if SectionIcon}
 												<SectionIcon />
 											{/if}
@@ -142,8 +168,5 @@
 			</Sidebar.Menu>
 		</Sidebar.Group>
 	</Sidebar.Content>
-	<Sidebar.Footer class="mt-auto border-t p-3">
-		<SearchCommand {navigation} />
-	</Sidebar.Footer>
 	<Sidebar.Rail />
 </Sidebar.Root>
