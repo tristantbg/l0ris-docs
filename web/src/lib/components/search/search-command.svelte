@@ -222,16 +222,18 @@
 		<div class="flex flex-wrap items-center gap-1.5 border-b px-3 py-2">
 			{#each Object.keys(globalCategoryFilters) as name (name)}
 				{@const count = categoryFilters[name] ?? 0}
-				<button type="button" onclick={() => toggleCategory(name)} class="cursor-pointer">
-					<Badge variant={selectedCategory === name ? 'default' : 'secondary'}>
-						{name}
-						{#if selectedCategory === name}
-							<XIcon class="size-3" />
-						{:else}
-							<span class="opacity-60">&nbsp;{count}</span>
-						{/if}
-					</Badge>
-				</button>
+				{#if count > 0}
+					<button type="button" onclick={() => toggleCategory(name)} class="cursor-pointer">
+						<Badge variant={selectedCategory === name ? 'default' : 'secondary'}>
+							{name}
+							{#if selectedCategory === name}
+								<XIcon class="size-3" />
+							{:else}
+								<span class="opacity-60">&nbsp;{count}</span>
+							{/if}
+						</Badge>
+					</button>
+				{/if}
 			{/each}
 			{#if visibleTags.length}
 				<span class="bg-border mx-1 h-4 w-px"></span>
