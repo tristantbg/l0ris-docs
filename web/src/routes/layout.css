@@ -1,6 +1,6 @@
 @import 'tailwindcss';
-@import "tw-animate-css";
-@import "@fontsource-variable/inter";
+@import 'tw-animate-css';
+@import '@fontsource-variable/inter';
 
 @custom-variant dark (&:is(.dark *));
 @plugin '@tailwindcss/typography';
@@ -190,7 +190,12 @@ html.dark .code-block-title {
 		@apply font-sans;
 		scroll-behavior: smooth;
 	}
-	h1, h2, h3, h4, h5, h6 {
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
 		scroll-margin-top: 5rem;
 	}
 }
@@ -203,25 +208,29 @@ html.dark .code-block-title {
 }
 
 @custom-variant data-open {
-	&:where([data-state="open"]), &:where([data-open]:not([data-open="false"])) {
+	&:where([data-state='open']),
+	&:where([data-open]:not([data-open='false'])) {
 		@slot;
 	}
 }
 
 @custom-variant data-closed {
-	&:where([data-state="closed"]), &:where([data-closed]:not([data-closed="false"])) {
+	&:where([data-state='closed']),
+	&:where([data-closed]:not([data-closed='false'])) {
 		@slot;
 	}
 }
 
 @custom-variant data-checked {
-	&:where([data-state="checked"]), &:where([data-checked]:not([data-checked="false"])) {
+	&:where([data-state='checked']),
+	&:where([data-checked]:not([data-checked='false'])) {
 		@slot;
 	}
 }
 
 @custom-variant data-unchecked {
-	&:where([data-state="unchecked"]), &:where([data-unchecked]:not([data-unchecked="false"])) {
+	&:where([data-state='unchecked']),
+	&:where([data-unchecked]:not([data-unchecked='false'])) {
 		@slot;
 	}
 }
@@ -233,25 +242,27 @@ html.dark .code-block-title {
 }
 
 @custom-variant data-disabled {
-	&:where([data-disabled="true"]), &:where([data-disabled]:not([data-disabled="false"])) {
+	&:where([data-disabled='true']),
+	&:where([data-disabled]:not([data-disabled='false'])) {
 		@slot;
 	}
 }
 
 @custom-variant data-active {
-	&:where([data-state="active"]), &:where([data-active]:not([data-active="false"])) {
+	&:where([data-state='active']),
+	&:where([data-active]:not([data-active='false'])) {
 		@slot;
 	}
 }
 
 @custom-variant data-horizontal {
-	&:where([data-orientation="horizontal"]) {
+	&:where([data-orientation='horizontal']) {
 		@slot;
 	}
 }
 
 @custom-variant data-vertical {
-	&:where([data-orientation="vertical"]) {
+	&:where([data-orientation='vertical']) {
 		@slot;
 	}
 }
@@ -267,9 +278,9 @@ html.dark .code-block-title {
 /* Print styles */
 @media print {
 	/* Hide non-content elements */
-	[data-slot="sidebar"],
-	[data-slot="sidebar-trigger"],
-	header:has([data-slot="sidebar-trigger"]),
+	[data-slot='sidebar'],
+	[data-slot='sidebar-trigger'],
+	header:has([data-slot='sidebar-trigger']),
 	nav:has(.backdrop-blur-md),
 	.copy-btn,
 	.anchor-link,
@@ -279,7 +290,7 @@ html.dark .code-block-title {
 	}
 
 	/* Full width content */
-	[data-slot="sidebar-inset"] {
+	[data-slot='sidebar-inset'] {
 		margin: 0 !important;
 		padding: 0 !important;
 		width: 100% !important;
@@ -297,14 +308,15 @@ html.dark .code-block-title {
 	}
 
 	/* Expand links */
-	a[href^="http"]::after {
-		content: " (" attr(href) ")";
+	a[href^='http']::after {
+		content: ' (' attr(href) ')';
 		font-size: 0.75em;
 		color: #666;
 	}
 
 	/* Page breaks */
-	h2, h3 {
+	h2,
+	h3 {
 		page-break-after: avoid;
 	}
 

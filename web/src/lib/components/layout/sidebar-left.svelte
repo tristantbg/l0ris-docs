@@ -6,7 +6,7 @@
 	import type { NavItem } from '$lib/docs/types.js';
 	import { goto } from '$app/navigation';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
-	import GalleryVerticalEndIcon from '@lucide/svelte/icons/gallery-vertical-end';
+	import WarehouseIcon from '@lucide/svelte/icons/warehouse';
 	import ChevronRightIcon from '@lucide/svelte/icons/chevron-right';
 	import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
 	import CheckIcon from '@lucide/svelte/icons/check';
@@ -50,7 +50,7 @@
 									<div
 										class="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg"
 									>
-										<GalleryVerticalEndIcon class="size-4" />
+										<WarehouseIcon class="size-4" />
 									</div>
 									<div class="flex flex-col gap-0.5 leading-none">
 										<span class="font-semibold">{siteTitle}</span>
@@ -86,7 +86,7 @@
 								<div
 									class="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg"
 								>
-									<GalleryVerticalEndIcon class="size-4" />
+									<WarehouseIcon class="size-4" />
 								</div>
 								<div class="flex flex-col gap-0.5 leading-none">
 									<span class="font-medium">{siteTitle}</span>

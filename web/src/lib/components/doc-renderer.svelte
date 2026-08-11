@@ -1,6 +1,9 @@
 <script lang="ts">
+	import { setContext } from 'svelte';
 	import type { DocMeta, DocPage } from '$lib/docs/types.js';
 	import { toc } from '$lib/docs/toc.svelte';
+	import { lightboxUrl, LIGHTBOX_CONTEXT } from '$lib/state/lightbox-url';
+	import Lightbox from '$lib/components/lightbox.svelte';
 	import MobileToc from '$lib/components/mobile-toc.svelte';
 	import BackToTop from '$lib/components/nav/back-to-top.svelte';
 	import CopyUrl from '$lib/components/nav/copy-url.svelte';
@@ -37,6 +40,30 @@
 	} = $props();
 
 	// let readingTime = $derived(rawContent ? calculateReadingTime(rawContent) : '');
+
+	// Every visual on the page — body media first (images, videos, external
+	// embeds, in document order), then the gallery grid — becomes a slide of
+	// one shared lightbox, opened by clicking any of them.
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	function isSlide(block: any): boolean {
+		if (block?._type === 'video') return true;
+		if (block?._type === 'externalVideo') return Boolean(block.url);
+		if (block?._type === 'image' || block?._type === 'imageAlt')
+			return Boolean(block.asset?._ref ?? block.asset?._id);
+		return false;
+	}
+
+	const lightbox = lightboxUrl('media');
+	const slides = $derived([...body.filter(isSlide), ...gallery.filter(isSlide)]);
+
+	function openByKey(key: string | undefined) {
+		const index = slides.findIndex((slide) => slide._key === key);
+		if (index !== -1) lightbox.open(index);
+	}
+
+	// Lets PortableText image blocks (rendered deep inside <PortableText>)
+	// open the lightbox on their own slide.
+	setContext(LIGHTBOX_CONTEXT, { open: openByKey });
 
 	let contentEl: HTMLDivElement | undefined = $state();
 
@@ -81,33 +108,6 @@
 				}
 			});
 			pre.appendChild(btn);
-		}
-
-		// Add click-to-zoom on images
-		const images = container.querySelectorAll<HTMLImageElement>('img');
-		for (const img of images) {
-			if (img.dataset.zoomEnabled) continue;
-			img.dataset.zoomEnabled = 'true';
-			img.classList.add('cursor-zoom-in', 'transition-transform');
-			img.addEventListener('click', () => {
-				const overlay = document.createElement('div');
-				overlay.className =
-					'fixed inset-0 z-[100] flex items-center justify-center bg-black/80 cursor-zoom-out p-8';
-				const clone = img.cloneNode() as HTMLImageElement;
-				clone.className = 'max-h-full max-w-full rounded-lg object-contain';
-				// Zoom the full-size original, not the currently selected srcset entry.
-				clone.removeAttribute('srcset');
-				clone.removeAttribute('sizes');
-				overlay.appendChild(clone);
-				overlay.addEventListener('click', () => overlay.remove());
-				document.addEventListener('keydown', function handler(e) {
-					if (e.key === 'Escape') {
-						overlay.remove();
-						document.removeEventListener('keydown', handler);
-					}
-				});
-				document.body.appendChild(overlay);
-			});
 		}
 
 		toc.extractHeadings(container);
@@ -170,7 +170,14 @@
 	{#if gallery.length}
 		<div class="mt-10 grid gap-4 sm:grid-cols-2">
 			{#each gallery as media (media._key ?? media.url)}
-				<Media {media} thumb containerClass="rounded-lg border" />
+				<button
+					type="button"
+					class="block cursor-zoom-in text-left"
+					onclick={() => openByKey(media._key)}
+					aria-label="Agrandir le média"
+				>
+					<Media {media} thumb containerClass="rounded-lg border" />
+				</button>
 			{/each}
 		</div>
 	{/if}
@@ -215,4 +222,8 @@
 			</div>
 		</div>
 	</footer>
+
+	{#if lightbox.index !== null && slides.length}
+		<Lightbox {slides} initialIndex={lightbox.index} url={lightbox} onclose={lightbox.close} />
+	{/if}
 </article>

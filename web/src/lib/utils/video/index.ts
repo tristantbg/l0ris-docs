@@ -33,6 +33,23 @@ export function getVideoThumbUrl(video: AnyVideo, width?: number, time?: number)
 	});
 }
 
+/**
+ * Privacy-friendly embed URL for an `externalVideo` value (YouTube / Vimeo
+ * page links pasted in the studio), or null when the URL isn't recognized.
+ */
+export function getEmbedUrl(value: AnyVideo): string | null {
+	const url: string = value?.url ?? '';
+	if (!url) return null;
+	if (value.provider === 'youtube' || /youtu\.?be/.test(url)) {
+		const id = url.match(
+			/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{6,})/
+		)?.[1];
+		return id ? `https://www.youtube-nocookie.com/embed/${id}` : null;
+	}
+	const vimeoId = url.match(/vimeo\.com\/(?:video\/)?(\d+)/)?.[1];
+	return vimeoId ? `https://player.vimeo.com/video/${vimeoId}` : null;
+}
+
 export function getVideoAnimatedUrl(
 	video: AnyVideo,
 	{ width, fps, start, end }: { width?: number; fps?: number; start?: number; end?: number } = {}

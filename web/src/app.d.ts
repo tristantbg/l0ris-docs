@@ -10,7 +10,10 @@ declare global {
 			};
 		}
 		// interface PageData {}
-		// interface PageState {}
+		interface PageState {
+			/** Open overlay lightbox (null = explicitly closed) — see $lib/state/lightbox-url. */
+			lightbox?: { name: string; index: number; pushed: boolean } | null;
+		}
 		// interface Platform {}
 	}
 }

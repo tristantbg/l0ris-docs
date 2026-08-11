@@ -23,6 +23,8 @@
 		quality?: number;
 		loading?: 'lazy' | 'eager';
 		autoplay?: boolean;
+		/** Show native controls on inline video players. */
+		controls?: boolean;
 		containerClass?: string;
 		mediaClass?: string;
 		alt?: string;
@@ -37,6 +39,7 @@
 		quality,
 		loading,
 		autoplay = true,
+		controls = false,
 		containerClass,
 		mediaClass,
 		alt
@@ -56,7 +59,7 @@
 		{mediaClass}
 	/>
 {:else if isVideo}
-	<Video video={media} {aspectRatio} {autoplay} {containerClass} {mediaClass} />
+	<Video video={media} {aspectRatio} {autoplay} {controls} {containerClass} {mediaClass} />
 {:else if media}
 	<Image
 		image={media}
