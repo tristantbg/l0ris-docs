@@ -236,16 +236,18 @@
 			{#if visibleTags.length}
 				<span class="bg-border mx-1 h-4 w-px"></span>
 				{#each visibleTags as [name, count] (name)}
-					<button type="button" onclick={() => toggleTag(name)} class="cursor-pointer">
-						<Badge variant={selectedTags.includes(name) ? 'default' : 'outline'}>
-							{name}
-							{#if selectedTags.includes(name)}
-								<XIcon class="size-3" />
-							{:else}
-								<span class="opacity-60">&nbsp;{count}</span>
-							{/if}
-						</Badge>
-					</button>
+					{#if count > 0}
+						<button type="button" onclick={() => toggleTag(name)} class="cursor-pointer">
+							<Badge variant={selectedTags.includes(name) ? 'default' : 'outline'}>
+								{name}
+								{#if selectedTags.includes(name)}
+									<XIcon class="size-3" />
+								{:else}
+									<span class="opacity-60">&nbsp;{count}</span>
+								{/if}
+							</Badge>
+						</button>
+					{/if}
 				{/each}
 			{/if}
 		</div>
