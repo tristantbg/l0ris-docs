@@ -64,7 +64,9 @@
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const filters: Record<string, any> = {};
 		if (selectedCategory) filters['Catégorie'] = [selectedCategory];
-		if (selectedTags.length) filters['Tag'] = { any: selectedTags };
+		// Spread, don't pass the $state proxy: Pagefind posts this object to
+		// its worker, and structured clone throws DataCloneError on proxies.
+		if (selectedTags.length) filters['Tag'] = { any: [...selectedTags] };
 		return filters;
 	}
 
