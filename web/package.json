@@ -50,6 +50,8 @@
 		"@unlazy/svelte": "^2.0.1",
 		"bits-ui": "^2.18.1",
 		"clsx": "^2.1.1",
+		"embla-carousel": "^8.6.0",
+		"embla-carousel-svelte": "^8.6.0",
 		"eslint": "^10.8.1",
 		"eslint-plugin-svelte": "^3.22.0",
 		"globals": "^17.9.0",
