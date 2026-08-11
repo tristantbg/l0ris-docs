@@ -1,3 +1,10 @@
 [build]
-  command = "npm run build"
+  command = "pnpm build"
   publish = "build"
+
+# Backup du noindex posé par l'edge function (couvre aussi robots.txt,
+# exclu de la barrière mot de passe pour rester lisible par les crawlers).
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"
